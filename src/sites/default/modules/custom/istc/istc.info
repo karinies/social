@@ -1,0 +1,4 @@
+name = ISTC
+description = "ISTC extensions/customizations/views."
+core = "7.x"
+package = Custom
