@@ -153,8 +153,10 @@ class date_ical_plugin_row_ical_feed extends views_plugin_row {
     }
 
     // Set the item date to the proper display timezone;
-    $start->setTimezone(new dateTimezone($item['timezone']));
-    $end->setTimezone(new dateTimezone($item['timezone']));
+    //$start->setTimezone(new dateTimezone($item['timezone']));
+    //$end->setTimezone(new dateTimezone($item['timezone']));
+    $start->setTimezone(new dateTimezone('UTC'));
+    $end->setTimezone(new dateTimezone('UTC'));
 
     $start_formatted = $start->format(DATE_FORMAT_DATETIME);
     $end_formatted = $end->format(DATE_FORMAT_DATETIME);
