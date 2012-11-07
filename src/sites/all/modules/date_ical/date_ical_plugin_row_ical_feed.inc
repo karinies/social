@@ -152,23 +152,15 @@ class date_ical_plugin_row_ical_feed extends views_plugin_row {
       return;
     }
 
-    // Set the item date to the proper display timezone;
-    //$start->setTimezone(new dateTimezone($item['timezone']));
-    //$end->setTimezone(new dateTimezone($item['timezone']));
+    // Set the item timezone for doing the all day test.
+    $start->setTimezone(new dateTimezone($item['timezone']));
+    $end->setTimezone(new dateTimezone($item['timezone']));
+  
+    $all_day = date_is_all_day($start, $end, date_granularity_precision($info['granularity']));
+
+    // Guarantee an always accurate time by using UTC.
     $start->setTimezone(new dateTimezone('UTC'));
     $end->setTimezone(new dateTimezone('UTC'));
-
-    $start_formatted = $start->format(DATE_FORMAT_DATETIME);
-    $end_formatted = $end->format(DATE_FORMAT_DATETIME);
-
-    $all_day = date_is_all_day($start_formatted, $end_formatted, date_granularity_precision($info['granularity']));
-
-    // According to RFC 2445 (clarified in RFC 5545) the DTEND value is
-    // non-inclusive.  When it is a DATE rather than a DATETIME, this means
-    // that we should add one day to its value.
-    if ($all_day) {
-      $end->modify("+1 day");
-    }
 
     module_load_include('inc', 'date_api', 'date_api_ical');
     $item_text = '';
