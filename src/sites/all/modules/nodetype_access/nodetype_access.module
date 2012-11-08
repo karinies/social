@@ -109,7 +109,10 @@ function nodetype_access_query_node_access_alter(QueryAlterableInterface $query)
       $query->where(check_plain($alias) . '.type IN (:types)', array(':types' => $types));
     }
   } else {
-    $query->where('0');
+    // '1=0' evaluates to a boolean on postgresql as well as on mysql
+    // Using just '0' wont work on postgresql, and using 'true' might cause issues
+    // on mysql
+    $query->where('0=1');
   }
 }
 

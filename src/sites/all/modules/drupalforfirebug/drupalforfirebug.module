@@ -44,19 +44,17 @@ function drupalforfirebug_exit() {
     }
   }
 
-  // For CKEditor, check the title to see if this is inside the editor window
-  // TODO make DFF compatible with iframe based wysywig editors.
-  if (module_exists('ckeditor') || module_exists('wysiwyg')) {
-    $dff = FALSE;
-  }
-
   // Check with Devel if Installed
   if (module_exists('devel')) {
     if (drupal_is_cli()) {
       $dff = FALSE;
     }
   }
-
+  
+  global $_drupalforfirebug_enable_output;
+  if($_drupalforfirebug_enable_output !== TRUE) {
+    $dff = FALSE;
+  }
 
   if ($dff) {
     // Load Relevant Files and Register Shutdown
@@ -139,6 +137,8 @@ function drupalforfirebug_views_pre_view(&$view, &$display_id) {
 */
 function drupalforfirebug_page_alter(&$page) {
   global $dfp_runtime;
+  global $_drupalforfirebug_enable_output;
+  $_drupalforfirebug_enable_output = TRUE;
   // TODO - make this work without recursion problems
   // $data = drupalforfirebug_array_compare((array) $dfp_runtime['drupalforfirebug_page']['original']['page'], (array) $page);
   // $output = drupalforfirebug_field_object('page', 'page', NULL, $data);
@@ -506,7 +506,7 @@ function drupalforfirebug_array_compare_code($a, $b, $c = array(), $history = ar
     }
 
     // Set the Proper Element
-    if (isset($akeys[$x]) && is_array($a[$akeys[$x]])) { // is b a valid array
+    if (isset($akeys[$x]) && is_array($a[$akeys[$x]]) && $bkeys) { // is b a valid array
       if (isset($c[$akeys[$x]])) {
         $aval = &$a[$akeys[$x]];
         $bval = &$b[$akeys[$x]];
