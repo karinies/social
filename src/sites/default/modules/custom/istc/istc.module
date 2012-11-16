@@ -154,3 +154,85 @@ function get_update_event ($nid) {
   return $event;
 }
 
+/* istc role field should only be accessible to admins  - Not currently working */
+function istc_form_profile2_form_alter(&$form, &$form_state) {
+  $form['profile_info']['field_istc_role']['#access'] = user_access('administer users');
+}
+
+function _send_digest ($email, $key, $body, $freq) {
+    $sitename = variable_get('site_name', "Default site name");
+    $from =  variable_get('site_mail', ini_get('sendmail_from'));
+    $message = array(
+		 'to' => $email,
+		 'subject' => t($freq.' Digest - Groups Activity on '.$sitename),
+		 'body' => $body,
+		 'headers' => array(
+		     'From' =>  $from,
+                     'MIME-Version' => '1.0',
+		     'Content-Type' => 'text/html;charset=utf-8',),
+	       );
+	      
+    $system = drupal_mail_system('istc', $key);
+    
+    if ($system->mail($message)) {
+	//print "SUCCESS!";
+    } else {
+	//print "failure :-( ";
+    }
+}
+
+
+function send_digest_to_users () {
+   global $user;
+   $ismonday = (date('w') == 6);
+   $query =  "select uid, name from users where uid  and uid !=1> 0 ";
+   $result = db_query($query);
+   $users = array();
+   foreach ($result as $users) {
+       $uid = $users->uid;
+       $usr = user_load($uid);
+       $profile = profile2_load_by_user($uid, 'profile_info');
+       
+       $name = $users->name;
+       $email = $usr->mail;
+       $key = $name.":".date('m-d-Y');
+       if ($profile) { // special check to avoid sbp users
+       if ($profile->field_istc_notifications) {
+           $notify = $profile->field_istc_notifications['und'][0]['value'];
+           
+           if ($notify == 'daily') {  
+       //print '<PRE> DAILY: '.($name)." : ".($email). '</PRE>';
+               $original_user = $user;
+               $old_state = drupal_save_session(FALSE);
+               $user = user_load($uid);
+
+               $output = views_embed_view("group_content","groups_activity_digest");
+               _send_digest($email, $key, $output, "Daily");
+
+               $user = $original_user;
+               drupal_save_session($old_state);
+               
+           } else if ($notify == 'weekly') {
+       //print '<PRE> WEEKLY: '.($name)." : ".($email). '</PRE>';
+               if ($ismonday) {
+                  $original_user = $user;
+                  $old_state = drupal_save_session(FALSE);
+
+                  $user = user_load($uid);
+
+                  $output = views_embed_view("group_content","groups_activity_digest_weekly");
+                  _send_digest($email, $key, $output, "Weekly");
+
+                  $user = $original_user;
+                  drupal_save_session($old_state);
+               }       
+           }
+       }
+       }      
+   }
+}
+
+function istc_cron() {
+    send_digest_to_users();
+}
+
