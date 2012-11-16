@@ -5,3 +5,5 @@ cache/
 files/
 private-files
 settings.php
+/nbproject/private/
+/src/nbproject/private/
