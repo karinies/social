@@ -183,9 +183,12 @@ function _send_digest ($email, $key, $body, $freq) {
 
 
 function send_digest_to_users () {
+   watchdog('ISTC Digest', "executing send_digest_to_users...");
    global $user;
-   $ismonday = (date('w') == 1);
-   $query =  "select uid, name from users where uid  and uid !=1> 0 ";
+   $ismonday = (date('w') == 3);
+   /*$query =  "select uid, name from users where uid  and uid !=1> 0 ";*/
+   $query =  "select uid, name from users where uid  and uid > 0 ";
+
    $result = db_query($query);
    $users = array();
    foreach ($result as $users) {
@@ -202,6 +205,7 @@ function send_digest_to_users () {
            
            if ($notify == 'daily') {  
        //print '<PRE> DAILY: '.($name)." : ".($email). '</PRE>';
+       watchdog('ISTC Digest', "Sending Daily Digest to ".$email);
                $original_user = $user;
                $old_state = drupal_save_session(FALSE);
                $user = user_load($uid);
@@ -214,6 +218,7 @@ function send_digest_to_users () {
                
            } else if ($notify == 'weekly') {
        //print '<PRE> WEEKLY: '.($name)." : ".($email). '</PRE>';
+       watchdog('ISTC Digest', "Sending Weekly Digest to ".$email);
                if ($ismonday) {
                   $original_user = $user;
                   $old_state = drupal_save_session(FALSE);
