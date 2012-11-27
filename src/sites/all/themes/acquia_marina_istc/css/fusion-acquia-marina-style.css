@@ -1477,6 +1477,10 @@ td {
   margin: 0;
 }
 
+.full-node .field-label{
+    padding-top: 20px;
+}
+
 /* Default node styles */
 
 /* Change unpublished and preview colors for dark background themes */
