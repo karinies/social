@@ -631,7 +631,7 @@ function file_field_widget_process($element, &$form_state, $form) {
       '#title' => t('Description'),
       '#value' => isset($item['description']) ? $item['description'] : '',
       '#maxlength' => variable_get('file_description_length', 128),
-      '#description' => t('If you include a description it will be used as the label of the link to the file in place of the filename.'),
+      '#description' => t('The description may be used as the label of the link to the file.'),
     );
   }
 

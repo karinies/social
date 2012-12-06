@@ -159,6 +159,7 @@ function istc_form_profile2_form_alter(&$form, &$form_state) {
   $form['profile_info']['field_istc_role']['#access'] = user_access('administer users');
 }
 
+
 function _send_digest ($email, $key, $body, $freq) {
     $sitename = variable_get('site_name', "Default site name");
     $from =  variable_get('site_mail', ini_get('sendmail_from'));
