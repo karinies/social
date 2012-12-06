@@ -1861,6 +1861,10 @@ ul.inline li.blog_usernames_blog {
     margin-bottom: 20px;
 }
 
+.node-biblio.full-node .content {
+    padding: 0 0 20px 0;
+}
+
 .view-display-id-group_files_block .views-table {
     margin-top: 40px;
 }
