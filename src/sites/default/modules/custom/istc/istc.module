@@ -182,6 +182,9 @@ function _send_digest ($email, $key, $body, $freq) {
     }
 }
 
+function _something_to_report ($report) {
+    return (strpos($report,'There is no recent activity.') == FALSE);
+}
 
 function send_digest_to_users () {
    watchdog('ISTC Digest', "executing send_digest_to_users...");
@@ -212,7 +215,9 @@ function send_digest_to_users () {
                $user = user_load($uid);
 
                $output = views_embed_view("group_content","groups_activity_digest");
-               _send_digest($email, $key, $output, "Daily");
+               if (_something_to_report($output)) {
+                   _send_digest($email, $key, $output, "Daily");
+               }
 
                $user = $original_user;
                drupal_save_session($old_state);
@@ -227,7 +232,9 @@ function send_digest_to_users () {
                   $user = user_load($uid);
 
                   $output = views_embed_view("group_content","groups_activity_digest_weekly");
-                  _send_digest($email, $key, $output, "Weekly");
+                  if (_something_to_report($output)) {
+                      _send_digest($email, $key, $output, "Weekly");
+                  }
 
                   $user = $original_user;
                   drupal_save_session($old_state);
