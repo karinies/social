@@ -159,37 +159,25 @@ function istc_form_profile2_form_alter(&$form, &$form_state) {
   $form['profile_info']['field_istc_role']['#access'] = user_access('administer users');
 }
 
-
-function _send_digest ($email, $key, $body, $freq) {
-    $sitename = variable_get('site_name', "Default site name");
-    $from =  variable_get('site_mail', ini_get('sendmail_from'));
-    $message = array(
-		 'to' => $email,
-		 'subject' => t($freq.' Digest - Groups Activity on '.$sitename),
-		 'body' => $body,
-		 'headers' => array(
-		     'From' =>  $from,
-                     'MIME-Version' => '1.0',
-		     'Content-Type' => 'text/html;charset=utf-8',),
-	       );
-	      
-    $system = drupal_mail_system('istc', $key);
-    
-    if ($system->mail($message)) {
-	//print "SUCCESS!";
-    } else {
-	//print "failure :-( ";
+function istc_mail ($key, &$message, $params) {
+    $sitename = variable_get('site_name', "Default site name");    
+    switch($key) {
+      case 'digest':
+        $langcode = $message['language']->language;
+        $message['subject'] = t($params['freq'].' Digest - Groups Activity on '.$sitename, array('langcode' => $langcode));
+        $message['body'][] = t($params['body'], array('langcode' => $langcode));
+        break;
     }
 }
-
+  
 function _something_to_report ($report) {
-    return (strpos($report,'There is no recent activity.') == FALSE);
+   return (strpos($report,'There is no recent activity.') == FALSE);
 }
 
 function send_digest_to_users () {
    watchdog('ISTC Digest', "executing send_digest_to_users...");
    global $user;
-   $ismonday = (date('w') == 3);
+   $ismonday = (date('w') == 1);
    /*$query =  "select uid, name from users where uid  and uid !=1> 0 ";*/
    $query =  "select uid, name from users where uid  and uid > 0 ";
 
@@ -202,7 +190,6 @@ function send_digest_to_users () {
        
        $name = $users->name;
        $email = $usr->mail;
-       $key = $name.":".date('m-d-Y');
        if ($profile) { // special check to avoid sbp users
        if ($profile->field_istc_notifications) {
            $notify = $profile->field_istc_notifications['und'][0]['value'];
@@ -216,7 +203,10 @@ function send_digest_to_users () {
 
                $output = views_embed_view("group_content","groups_activity_digest");
                if (_something_to_report($output)) {
-                   _send_digest($email, $key, $output, "Daily");
+                   /*_send_digest($email, $key, $output, "Daily");*/
+                   $params['body'] = $output;
+                   $params['freq'] = "Daily";
+                   drupal_mail('istc', 'digest', $email, user_preferred_language($user), $params);
                }
 
                $user = $original_user;
@@ -233,7 +223,10 @@ function send_digest_to_users () {
 
                   $output = views_embed_view("group_content","groups_activity_digest_weekly");
                   if (_something_to_report($output)) {
-                      _send_digest($email, $key, $output, "Weekly");
+                      /*_send_digest($email, $key, $output, "Weekly");*/
+                      $params['body'] = $output;
+                      $params['freq'] = "Weely";
+                      drupal_mail('istc', 'digest', $email, user_preferred_language($user), $params);
                   }
 
                   $user = $original_user;
@@ -248,4 +241,3 @@ function send_digest_to_users () {
 function istc_cron() {
     send_digest_to_users();
 }
-
