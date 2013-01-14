@@ -190,7 +190,8 @@ class BiblioCrossRefClient
 
         break;
       case 'journal_issue':
-        if (!isset($this->node['biblio_date'])) {
+        //if (!isset($this->node['biblio_date'])) {
+        if (!isset($this->node['biblio_date']) && (!empty($this->node['year']))) {
           $this->node['biblio_date'] = (!empty($this->node['month']) ? $this->node['month'] . '/':'') . $this->node['year'];
         }
         break;
