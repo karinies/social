@@ -1480,6 +1480,11 @@ td {
 .full-node .field{
     padding-top: 20px;
 }
+/* exclude front  panel page node */
+#node-1.full-node .field{
+    padding-top: 5px;
+}
+
 
 /* Default node styles */
 
@@ -1864,6 +1869,12 @@ ul.inline li.blog_usernames_blog {
 .node-biblio.full-node .content {
     padding: 0 0 20px 0;
 }
+
+/*
+.node-biblio.full-node .field-name-field-pub-file {
+    float: right;
+}
+*/
 
 .view-display-id-group_files_block .views-table {
     margin-top: 40px;
