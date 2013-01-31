@@ -1662,8 +1662,8 @@ function _search_by_page_indexing_users() {
       if ($account) {
         db_insert('sbp_index_users')
           ->fields(array(
-              'rid', $rid,
-              'uid', $account->uid,
+              'rid'=> $rid,
+              'uid'=> $account->uid,
             ))
           ->execute();
       }
