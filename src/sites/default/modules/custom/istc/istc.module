@@ -154,11 +154,14 @@ function get_update_event ($nid) {
   return $event;
 }
 
-/* istc role field should only be accessible to admins  - Not currently working */
+/* hook form_profile2_form_alter */
+/* istc role field should only be accessible to admins */
 function istc_form_profile2_form_alter(&$form, &$form_state) {
-  $form['profile_info']['field_istc_role']['#access'] = user_access('administer users');
+    //dpm($form);
+    $form['profile_profile_info']['field_istc_role']['#access'] = user_access('administer users');
 }
 
+/* hook mail */
 function istc_mail ($key, &$message, $params) {
     $sitename = variable_get('site_name', "Default site name");    
     switch($key) {
