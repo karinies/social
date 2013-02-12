@@ -5,7 +5,8 @@
  * and open the template in the editor.
  */
 
-function acquia_marina_istc_file_link_modified ($variables) {
+
+function acquia_marina_istc_file_link($variables) {
   $file = $variables['file'];
   $icon_directory = $variables['icon_directory'];
 
@@ -31,6 +32,5 @@ function acquia_marina_istc_file_link_modified ($variables) {
   return '<span class="file">' . $icon . ' ' . l($link_text, $url, $options) . '</span>';
 }
 
- 
 
 ?>
