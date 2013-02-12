@@ -5,7 +5,7 @@
  * and open the template in the editor.
  */
 
-function acquia_marina_istc_file_link($variables) {
+function acquia_marina_istc_file_link_modified ($variables) {
   $file = $variables['file'];
   $icon_directory = $variables['icon_directory'];
 
@@ -22,13 +22,12 @@ function acquia_marina_istc_file_link($variables) {
 
   // Use the description as the link text if available.
   if (empty($file->description)) {
-    $link_text = "download"; /*$file->filename;*/
+    $link_text = "download"; //$file->filename;
   }
   else {
     $link_text = $file->description;
     $options['attributes']['title'] = check_plain($file->filename);
   }
-  //dpm($variables);
   return '<span class="file">' . $icon . ' ' . l($link_text, $url, $options) . '</span>';
 }
 
