@@ -174,7 +174,8 @@ function istc_mail ($key, &$message, $params) {
 }
   
 function _something_to_report ($report) {
-   return (strpos($report,'There is no recent activity.') == FALSE);
+   return ((strpos($report,'There is no recent activity.') == FALSE) ||
+           (strpos($report,'New calendar events') == TRUE));
 }
 
 function send_digest_to_users () {
