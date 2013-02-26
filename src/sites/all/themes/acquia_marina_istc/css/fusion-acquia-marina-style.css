@@ -1857,6 +1857,15 @@ ul.inline li.blog_usernames_blog {
     margin-top: 50px;
 }
 
+.view-group-content .moreblogs {
+    font-weight: bold;
+    padding-top: 10px;
+    float: right;
+}
+.panels-flexible-region-inside {
+    margin-right: 15px;
+}
+
 .view-group-content .add-content-link {
     float: right;
     margin-top: -20px;
