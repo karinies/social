@@ -1869,6 +1869,9 @@ ul.inline li.blog_usernames_blog {
 .node-blog.node-teaser img {
     display:none;
 }
+.node-blog.node-teaser .user-picture img {
+    display:inline;
+}
 
 .view-group-content .add-content-link {
     float: right;
