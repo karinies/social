@@ -1865,6 +1865,10 @@ ul.inline li.blog_usernames_blog {
 .panels-flexible-region-inside {
     margin-right: 15px;
 }
+/* filter images from blog teasers */
+.node-blog.node-teaser img {
+    display:none;
+}
 
 .view-group-content .add-content-link {
     float: right;
