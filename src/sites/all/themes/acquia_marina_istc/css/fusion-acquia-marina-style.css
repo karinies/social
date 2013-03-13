@@ -1901,9 +1901,8 @@ ul.inline li.blog_usernames_blog {
     margin-top: -40px;
 }
 
-#sidebar-first .block-menu li a.hover,
-#sidebar-first .block-menu li a.focus,
-#sidebar-first .block-menu li a.active {
+#sidebar-first .block-menu li a 
+{
     font-size: 1.25em;
 }
 #sidebar-first .block-menu {
