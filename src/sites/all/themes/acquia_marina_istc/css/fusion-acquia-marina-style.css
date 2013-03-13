@@ -1903,7 +1903,8 @@ ul.inline li.blog_usernames_blog {
 
 #sidebar-first .block-menu li a 
 {
-    font-size: 1.25em;
+    font-size: 1.1em;
+    font-weight: bold;
 }
 #sidebar-first .block-menu {
     padding-top: 30px;
