@@ -1901,10 +1901,10 @@ ul.inline li.blog_usernames_blog {
     margin-top: -40px;
 }
 
-#sidebar-first .block-menu li a 
+#sidebar-first .block-menu li
 {
     font-size: 1.1em;
-    font-weight: bold;
+    padding-bottom: .5em;
 }
 #sidebar-first .block-menu {
     padding-top: 30px;
