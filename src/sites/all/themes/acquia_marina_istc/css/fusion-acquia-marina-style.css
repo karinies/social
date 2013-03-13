@@ -1778,6 +1778,7 @@ div.panel-pane div.node,
     -webkit-box-shadow: 2px 2px 5px #CCC;
     box-shadow: 2px 2px 5px #CCC;
 }
+
 ul.inline li.blog_usernames_blog {
     display: none;
 }
@@ -1900,3 +1901,11 @@ ul.inline li.blog_usernames_blog {
     margin-top: -40px;
 }
 
+#sidebar-first .block-menu li a.hover,
+#sidebar-first .block-menu li a.focus,
+#sidebar-first .block-menu li a.active {
+    font-size: 1.25em;
+}
+#sidebar-first .block-menu {
+    padding-top: 30px;
+}
