@@ -649,8 +649,17 @@ function template_preprocess_views_view_table(&$vars) {
   }
   $vars['classes_array'][] = 'cols-'. count($vars['header']);
 
+  // Add the summary to the list if set.
   if (!empty($handler->options['summary'])) {
-    $vars['attributes_array'] = array('summary' => $handler->options['summary']);
+    $vars['attributes_array'] = array('summary' => filter_xss_admin($handler->options['summary']));
+  }
+
+  // Add the caption to the list if set.
+  if (!empty($handler->options['caption'])) {
+    $vars['caption'] = filter_xss_admin($handler->options['caption']);
+  }
+  else {
+    $vars['caption'] = '';
   }
 }
 
@@ -689,8 +698,7 @@ function template_preprocess_views_view_grid(&$vars) {
     }
     if ($row) {
       // Fill up the last line only if it's configured, but this is default.
-      //if (!empty($handler->options['fill_single_line']) && count($rows)) {
-      if (!empty($handler->options['fill_single_line'])) {
+      if (!empty($handler->options['fill_single_line']) && count($rows)) {
         for ($i = 0; $i < ($columns - $col_count); $i++) {
           $row[] = '';
         }
@@ -763,8 +771,18 @@ function template_preprocess_views_view_grid(&$vars) {
   }
   $vars['rows'] = $rows;
   $vars['class'] = 'views-view-grid cols-' . $columns;
+
+  // Add the summary to the list if set.
   if (!empty($handler->options['summary'])) {
-    $vars['attributes_array'] = array('summary' => $handler->options['summary']);
+    $vars['attributes_array'] = array('summary' => filter_xss_admin($handler->options['summary']));
+  }
+
+  // Add the caption to the list if set.
+  if (!empty($handler->options['caption'])) {
+    $vars['caption'] = filter_xss_admin($handler->options['caption']);
+  }
+  else {
+    $vars['caption'] = '';
   }
 }
 
@@ -1022,18 +1040,12 @@ function theme_views_mini_pager($vars) {
   $tags = $vars['tags'];
   $element = $vars['element'];
   $parameters = $vars['parameters'];
-  $quantity = $vars['quantity'];
 
-  // Calculate various markers within this pager piece:
-  // Middle is used to "center" pages around the current page.
-  $pager_middle = ceil($quantity / 2);
   // current is the page we are currently paged to
   $pager_current = $pager_page_array[$element] + 1;
   // max is the maximum page number
   $pager_max = $pager_total[$element];
   // End of marker calculations.
-
-
 
   if ($pager_total[$element] > 1) {
 
