@@ -1723,7 +1723,13 @@ div.panel-pane div.node,
 
 #search {
     float: right;
-    margin-top: -60px;
+    margin-top: -50px;
+}
+/* collab link */
+#header-group .collab-link a {
+    float: right;
+    color: #F6741F;
+    margin-top: -40px;
 }
 /*
 #block-block-1 .title,
@@ -1748,11 +1754,7 @@ div.panel-pane div.node,
 .view-links li p{
     color: #666;   
 }
-/* collab link */
-#header-group #block-block-4 a {
-    float: right;
-    color: #F6741F;
-}
+
 /* people page */
 .view-people.view-display-id-people_page .view-content table {
     border-collapse: collapse;
