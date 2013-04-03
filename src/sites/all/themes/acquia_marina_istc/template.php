@@ -59,4 +59,12 @@ function acquia_marina_istc_file_link_orig($variables) {
 }
 
 
+/** 
+ * Remove the explicit (All day) tag
+ */
+function acquia_marina_istc_date_all_day_label() {
+  return '';
+}
+
+
 ?>
