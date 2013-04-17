@@ -850,6 +850,7 @@ ul.sf-horizontal li {
 /* @group  Typography */
 
 .main-menu ul.menu,
+.side-menu ul.menu,
 .block-superfish ul.sf-menu {
   font-family: "Myriad Pro", "Myriad Web Pro Regular", "Lucida Grande", Geneva, Trebuchet MS, sans-serif;
   font-size: 100%; /* 12px/12px */
@@ -877,7 +878,16 @@ ul.sf-horizontal li {
   padding: 0;
   position: relative;
 }
-
+.side-menu ul.menu li {
+  background: transparent;
+  display: block;
+  margin: 0 0 4px 0;
+  padding: 0;
+  position: relative;
+}
+.side-menu { 
+  padding-top: 75px;
+}
 .block-superfish ul.sf-horizontal li.last,
 .block-superfish ul.sf-horizontal li.active-trail.last,
 .main-menu ul.menu li.last {
@@ -900,12 +910,28 @@ ul.sf-horizontal li {
   -webkit-border-radius: 5px 5px 0 0;
 }
 
+.side-menu ul.menu li a:link,
+.side-menu ul.menu li a:visited {
+  background-color: #efefef;
+  border: none;
+  color: #048DB7;
+  display: block;
+  padding: 5px 10px 2px 10px;
+  text-decoration: none;
+  border-radius: 5px 5px 5px 5px;
+  -moz-border-radius: 5px 5px 5px 5px;
+  -webkit-border-radius: 5px 5px 5px 5px;
+}
 .block-superfish ul.sf-horizontal li a:hover,
 .block-superfish ul.sf-horizontal li a:focus,
 .block-superfish ul.sf-horizontal li.sfHover > a:link,
 .block-superfish ul.sf-horizontal li.sfHover > a:visited,
 .block-superfish ul.sf-horizontal li.active-trail > a:link,
 .block-superfish ul.sf-horizontal li.active-trail > a:visited,
+.side-menu ul.menu li a:hover,
+.side-menu ul.menu li a:focus,
+.side-menu ul.menu li.active-trail > a:link,
+.side-menu ul.menu li.active-trail > a:visited,
 .main-menu ul.menu li a:hover,
 .main-menu ul.menu li a:focus,
 .main-menu ul.menu li.active-trail a:link,
@@ -1910,4 +1936,42 @@ ul.inline li.blog_usernames_blog {
 }
 #sidebar-first .block-menu {
     padding-top: 30px;
+}
+
+/* events */
+/* linked event teasers */
+.node-event-link-public.node-teaser img {
+    float: left;
+    margin-right: 1.5em;
+    margin-bottom: 10px;
+    -moz-box-shadow: 2px 2px 5px #525252;
+    -webkit-box-shadow: 2px 2px 5px #525252;
+    box-shadow: 2px 2px 5px #525252;
+}
+.node-event-link-public.node-teaser .field-name-field-event-link a {
+    font-family: "Myriad Pro", "Myriad Web Pro Regular", "Lucida Grande", Geneva, Trebuchet MS, sans-serif;
+    font-size: 133.3%; /* 16px/12px */
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    margin-top: 20px;
+} 
+.node-event-link-public.node-teaser .field-name-field-pub-event-date {
+    margin-top: .5em;
+} 
+.node-event-link-public.node-teaser .node-readmore {
+    display:none;
+} 
+.node-event-link-public.node-teaser p {
+    margin-bottom: .5em;
+}
+.node-event-link-public.node-teaser .links {
+    padding-bottom: 0em;
+    clear: both;
+}
+
+/* side menu */
+
+.side-menu { 
+  padding-top: 75px;
 }
