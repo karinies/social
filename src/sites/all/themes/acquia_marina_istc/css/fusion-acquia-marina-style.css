@@ -1969,7 +1969,10 @@ ul.inline li.blog_usernames_blog {
     padding-bottom: 0em;
     clear: both;
 }
-
+.view-display-id-upcoming_events_panel_pane .views-row {
+    padding-bottom: .5em;
+}
+    
 /* side menu */
 
 .side-menu { 
