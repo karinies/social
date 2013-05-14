@@ -65,7 +65,11 @@
     <?php print l(t($website), $website, array('attributes' => array('target'=>'_blank'))); ?>
   </div>
   <?php } ?>
-    
+  <?php if (user_authenticated()) {?>    
+  <div class="profile-email">
+    <a href="mailto:<?php print($user->mail);?>"><?php print($user->mail); ?></a>
+  </div> 
+  <?php } ?>
   <?php 
     if ($profile->field_bio) { 
       $bio =  $profile->field_bio['und'][0]['value'];
@@ -75,7 +79,7 @@
   </div>
   <?php } ?>
       
-  <?php if (user_authenticated()) {?>  
+  <?php if (user_authenticated()) {?>
     <div class="profile-blog">
       <?php print render($user_profile['summary']['blog']['#markup']); ?>
     </div>
