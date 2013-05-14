@@ -155,11 +155,14 @@ function get_update_event ($nid) {
 }
 
 // use wysiwyg editor for personal contact form
-function istc_form_alter(&$form, &$form_state, $form_id) {
+//THIS CAUSES AN ERROR WHEN MAIL IS SENT.
+//Notice: Array to string conversion in HTMLMailSystem->format() (line 49 of /var/www/html/drupal/istc-social/src/sites/all/modules/htmlmail/htmlmail.mail.inc).
+/*function istc_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'contact_personal_form') {
       $form['message']['#type']='text_format';
   }
 }
+ */
 
 
 /* hook form_profile2_form_alter */
