@@ -154,6 +154,14 @@ function get_update_event ($nid) {
   return $event;
 }
 
+// use wysiwyg editor for personal contact form
+function istc_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'contact_personal_form') {
+      $form['message']['#type']='text_format';
+  }
+}
+
+
 /* hook form_profile2_form_alter */
 /* istc role field should only be accessible to admins */
 function istc_form_profile2_form_alter(&$form, &$form_state) {
