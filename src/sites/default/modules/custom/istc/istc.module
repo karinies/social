@@ -157,7 +157,8 @@ function get_update_event ($nid) {
 // use wysiwyg editor for personal contact form
 //THIS CAUSES AN ERROR WHEN MAIL IS SENT.
 //Notice: Array to string conversion in HTMLMailSystem->format() (line 49 of /var/www/html/drupal/istc-social/src/sites/all/modules/htmlmail/htmlmail.mail.inc).
-/*function istc_form_alter(&$form, &$form_state, $form_id) {
+/*
+function istc_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'contact_personal_form') {
       $form['message']['#type']='text_format';
   }
@@ -251,6 +252,45 @@ function send_digest_to_users () {
        }
        }      
    }
+}
+
+function test_digest_to_users () {
+       $uid = 94; // Kari Nies
+       $usr = user_load($uid);
+       $profile = profile2_load_by_user($uid, 'profile_info');
+       
+       $name = $usr->name;
+       $email = $usr->mail;
+       
+       watchdog('ISTC Digest', "Sending Daily Digest to ".$email);
+               $original_user = $usr;
+               $old_state = drupal_save_session(FALSE);
+               $user = user_load($uid);
+
+               $output = views_embed_view("group_notifications","group_activity_digest_daily");
+               if (_something_to_report($output)) {
+                   $params['body'] = $output;
+                   $params['freq'] = "Daily";
+                   drupal_mail('istc', 'digest', $email, user_preferred_language($user), $params);
+               }
+
+               $user = $original_user;
+               drupal_save_session($old_state);
+       watchdog('ISTC Digest', "Sending Weekly Digest to ".$email);
+               $original_user = $usr;
+               $old_state = drupal_save_session(FALSE);
+
+               $user = user_load($uid);
+
+               $output = views_embed_view("group_notifications","group_activity_digest_weekly");
+               if (_something_to_report($output)) {
+                   $params['body'] = $output;
+                   $params['freq'] = "Weely";
+                   drupal_mail('istc', 'digest', $email, user_preferred_language($user), $params);
+               }
+
+               $user = $original_user;
+               drupal_save_session($old_state);
 }
 
 function istc_cron() {
