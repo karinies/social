@@ -186,9 +186,9 @@ function istc_mail ($key, &$message, $params) {
 }
   
 function _something_to_report ($report) {
-   return ((strpos($report,'There is no recent activity.') == FALSE) ||
-           (strpos($report,'New calendar events') == TRUE) ||
-           (strpos($report,'New Group Comments') == TRUE) ||
+   return ((strpos($report,'There is no new content.') == FALSE) ||
+           (strpos($report,'New calendar events') == TRUE) || /* old notifications */
+           (strpos($report,'New Group Comments') == TRUE)  ||
            (strpos($report,'New Calendar Events') == TRUE) ||
            (strpos($report,'New Groups') == TRUE));
 ;
