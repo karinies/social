@@ -187,7 +187,11 @@ function istc_mail ($key, &$message, $params) {
   
 function _something_to_report ($report) {
    return ((strpos($report,'There is no recent activity.') == FALSE) ||
-           (strpos($report,'New calendar events') == TRUE));
+           (strpos($report,'New calendar events') == TRUE) ||
+           (strpos($report,'New Group Comments') == TRUE) ||
+           (strpos($report,'New Calendar Events') == TRUE) ||
+           (strpos($report,'New Groups') == TRUE));
+;
 }
 
 function send_digest_to_users () {
@@ -268,6 +272,7 @@ function test_digest_to_users () {
                $user = user_load($uid);
 
                $output = views_embed_view("group_notifications","group_activity_digest_daily");
+               print $output;
                if (_something_to_report($output)) {
                    $params['body'] = $output;
                    $params['freq'] = "Daily";
@@ -283,6 +288,7 @@ function test_digest_to_users () {
                $user = user_load($uid);
 
                $output = views_embed_view("group_notifications","group_activity_digest_weekly");
+               print $output;
                if (_something_to_report($output)) {
                    $params['body'] = $output;
                    $params['freq'] = "Weely";
