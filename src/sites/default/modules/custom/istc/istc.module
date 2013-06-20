@@ -216,8 +216,6 @@ function send_digest_to_users () {
            $notify = $profile->field_istc_notifications['und'][0]['value'];
            
            if ($notify == 'daily') {  
-       //print '<PRE> DAILY: '.($name)." : ".($email). '</PRE>';
-       watchdog('ISTC Digest', "Sending Daily Digest to ".$email);
                $original_user = $user;
                $old_state = drupal_save_session(FALSE);
                $user = user_load($uid);
@@ -228,6 +226,7 @@ function send_digest_to_users () {
                    /*_send_digest($email, $key, $output, "Daily");*/
                    $params['body'] = $output;
                    $params['freq'] = "Daily";
+                   watchdog('ISTC Digest', "Sending Daily Digest to ".$email);
                    drupal_mail('istc', 'digest', $email, user_preferred_language($user), $params);
                }
 
@@ -235,8 +234,6 @@ function send_digest_to_users () {
                drupal_save_session($old_state);
                
            } else if ($notify == 'weekly') {
-       //print '<PRE> WEEKLY: '.($name)." : ".($email). '</PRE>';
-       watchdog('ISTC Digest', "Sending Weekly Digest to ".$email);
                if ($ismonday) {
                   $original_user = $user;
                   $old_state = drupal_save_session(FALSE);
@@ -249,6 +246,7 @@ function send_digest_to_users () {
                       /*_send_digest($email, $key, $output, "Weekly");*/
                       $params['body'] = $output;
                       $params['freq'] = "Weely";
+                      watchdog('ISTC Digest', "Sending Weekly Digest to ".$email);
                       drupal_mail('istc', 'digest', $email, user_preferred_language($user), $params);
                   }
 
@@ -269,7 +267,6 @@ function test_digest_to_users () {
        $name = $usr->name;
        $email = $usr->mail;
        
-       watchdog('ISTC Digest', "Sending Daily Digest to ".$email);
                $original_user = $usr;
                $old_state = drupal_save_session(FALSE);
                $user = user_load($uid);
@@ -277,6 +274,7 @@ function test_digest_to_users () {
                $output = views_embed_view("group_notifications","group_activity_digest_daily");
                print $output;
                if (_something_to_report($output)) {
+                   watchdog('ISTC Digest', "Sending Daily Digest to ".$email);
                    $params['body'] = $output;
                    $params['freq'] = "Daily";
                    drupal_mail('istc', 'digest', $email, user_preferred_language($user), $params);
@@ -284,7 +282,7 @@ function test_digest_to_users () {
 
                $user = $original_user;
                drupal_save_session($old_state);
-       watchdog('ISTC Digest', "Sending Weekly Digest to ".$email);
+               
                $original_user = $usr;
                $old_state = drupal_save_session(FALSE);
 
@@ -295,6 +293,7 @@ function test_digest_to_users () {
                if (_something_to_report($output)) {
                    $params['body'] = $output;
                    $params['freq'] = "Weely";
+                   watchdog('ISTC Digest', "Sending Weekly Digest to ".$email);
                    drupal_mail('istc', 'digest', $email, user_preferred_language($user), $params);
                }
 
