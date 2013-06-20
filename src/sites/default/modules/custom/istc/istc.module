@@ -186,8 +186,9 @@ function istc_mail ($key, &$message, $params) {
 }
   
 function _something_to_report ($report) {
-   return ((strpos($report,'There is no recent activity.') == FALSE) || /* old notifications */
-           (strpos($report,'New calendar events') == TRUE) || /* old notifications */
+   return (/*(strpos($report,'There is no recent activity.') == FALSE) || /* old notifications */
+           /*(strpos($report,'New calendar events') == TRUE) || /* old notifications */
+           (strpos($report,'There is no new content.') == FALSE) ||
            (strpos($report,'New Group Comments') == TRUE)  ||
            (strpos($report,'New Calendar Events') == TRUE) ||
            (strpos($report,'New Groups') == TRUE));
@@ -221,7 +222,8 @@ function send_digest_to_users () {
                $old_state = drupal_save_session(FALSE);
                $user = user_load($uid);
 
-               $output = views_embed_view("group_content","groups_activity_digest");
+               /* $output = views_embed_view("group_content","groups_activity_digest"); /* old notifications */
+               $output = views_embed_view("group_notifications","group_activity_digest_daily");
                if (_something_to_report($output)) {
                    /*_send_digest($email, $key, $output, "Daily");*/
                    $params['body'] = $output;
@@ -241,7 +243,8 @@ function send_digest_to_users () {
 
                   $user = user_load($uid);
 
-                  $output = views_embed_view("group_content","groups_activity_digest_weekly");
+                  /* $output = views_embed_view("group_content","groups_activity_digest_weekly"); /* old notifications */
+                  $output = views_embed_view("group_notifications","group_activity_digest_weekly");
                   if (_something_to_report($output)) {
                       /*_send_digest($email, $key, $output, "Weekly");*/
                       $params['body'] = $output;
