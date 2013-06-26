@@ -197,7 +197,9 @@ html {
 }
 
   
-.about-pane
+.about-pane,
+.pane-news,
+.pane-links
 {
   background: #FFF;
   border : solid 1px #ccc;
