@@ -316,16 +316,20 @@ html {
 
 .main-wrapper {
   background-color: #f8feff; /* old browsers */
+  /*background-color: #efefef;  grey */
+  /*
   background-image: linear-gradient(
 	top, 
 	#CCF5FF 0%, 
 	#f8feff 55px
   ); /* w3c */
+  /*
   background-image: -o-linear-gradient(
 	top, 
 	#CCF5FF 0%, 
 	#f8feff 55px
   ); /* opera */
+  /*
   background-image: -webkit-gradient(
 	linear, left top, left bottom,
 	from(#CCF5FF),
@@ -333,11 +337,13 @@ html {
 	color-stop(0%, #CCF5FF),
 	color-stop(10%, #f8feff)
   );  /* webkit */
+  /*
   background-image: -moz-linear-gradient(
 	top, 
 	#CCF5FF 0%, 
 	#f8feff 55px
   ); /* firefox */
+  
   border-top: 2px solid #FFFFFF;
   padding-top: 40px;
 }
