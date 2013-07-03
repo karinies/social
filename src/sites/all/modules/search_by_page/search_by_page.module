@@ -447,7 +447,8 @@ function search_by_page_path_field_prefix() {
 /**
  * Returns the content portion of the rendered page at the given path.
  *
- * Note: As a side effect, pager and page title variables may be altered!
+ * Note: As a side effect, theme, pager, and page title variables may be
+ * altered. The calling function needs to make sure they are restored.
  *
  * @param $path
  *    Path to render.
@@ -457,7 +458,6 @@ function search_by_page_path_field_prefix() {
  *   page content if all is well.
  */
 function search_by_page_page_content($path) {
-  global $_GET;
   $save_get = $_GET;
   $save_content = drupal_set_page_content();
 
@@ -472,8 +472,9 @@ function search_by_page_page_content($path) {
     $_GET += $getstuff;
   }
 
-  // Get page information.
+  // Set up the theme and get page information.
   drupal_static_reset('menu_get_item');
+  _search_by_page_setup_theme();
   $page = menu_execute_active_handler($path, FALSE);
   if (is_int($page)) {
     // Error code return.
@@ -492,7 +493,7 @@ function search_by_page_page_content($path) {
   }
 
   foreach (module_implements('page_build') as $module) {
-    $function = $module . '_page_build';
+    $function = ($module == 'block') ? '_search_by_page_build_content_blocks' : $module . '_page_build';
     $function($page);
   }
 
@@ -507,7 +508,52 @@ function search_by_page_page_content($path) {
   $_GET = $save_get;
   drupal_set_page_content($save_content);
   drupal_static('system_main_content_added', FALSE);
+  drupal_static_reset('menu_tree_set_path');
+  drupal_static_reset('menu_tree_page_data');
+  drupal_static_reset('menu_get_item');
   return $content;
+}
+
+/**
+ * Builds just the content region blocks.
+ *
+ * This is a substitute for block_build_page() so that while rendering,
+ * we avoid building blocks for regions other than 'content'.
+ */
+function _search_by_page_build_content_blocks(&$page) {
+  if ($blocks = block_get_blocks_by_region('content')) {
+    $page['content'] = $blocks;
+  }
+  drupal_static_reset('block_list');
+}
+
+/**
+ * Sets up the right theme to use for theming this page.
+ */
+function _search_by_page_setup_theme() {
+  // This basically follows drupal_theme_initialize(), but assumes all the
+  // bootstrap stuff has been done, and skips AJAX/JS stuff.
+  global $user;
+  global $theme;
+  global $theme_key;
+
+  $themes = list_themes();
+
+  $theme = !empty($user->theme) && drupal_theme_access($user->theme) ? $user->theme : variable_get('theme_default', 'bartik');
+  drupal_static_reset('menu_get_custom_theme');
+  $custom_theme = menu_get_custom_theme(TRUE);
+  $theme = !empty($custom_theme) ? $custom_theme : $theme;
+  $theme_key = $theme;
+
+
+  $base_theme = array();
+  $ancestor = $theme;
+  while ($ancestor && isset($themes[$ancestor]->base_theme)) {
+    $ancestor = $themes[$ancestor]->base_theme;
+    $base_theme[] = $themes[$ancestor];
+  }
+  _drupal_theme_initialize($themes[$theme], array_reverse($base_theme));
+  drupal_static_reset('drupal_alter');
 }
 
 /**
@@ -660,7 +706,8 @@ function search_by_page_search_execute($keys = NULL, $conditions = NULL) {
 
     $args = array('absolute' => TRUE);
     if (isset($parts[1])) {
-      $args['query'] = parse_str($parts[1]);
+      $args['query'] = array();
+      parse_str($parts[1], $args['query']);
     }
 
     // Special case: if this is a file, we need to use the File API to get
@@ -694,6 +741,7 @@ function search_by_page_search_execute($keys = NULL, $conditions = NULL) {
   $pager_page_array[0] = $tmp_parray;
   $pager_total[0] = $tmp_ptotal;
   $pager_total_items[0] = $tmp_itotal;
+  drupal_static_reset('menu_get_item');
   menu_set_item(NULL, $tmp_menu);
   drupal_set_breadcrumb($tmp_breadcrumb);
   menu_set_active_trail($tmp_trail);
@@ -702,6 +750,9 @@ function search_by_page_search_execute($keys = NULL, $conditions = NULL) {
   drupal_static_reset('drupal_set_page_content');
   drupal_static_reset('menu_local_tasks');
   drupal_static_reset('menu_local_tasks:root_path');
+  drupal_static_reset('menu_tree_set_path');
+  drupal_static_reset('menu_tree_page_data');
+  _search_by_page_setup_theme();
 
   return $results;
 }
@@ -851,6 +902,7 @@ function search_by_page_update_index() {
   drupal_static_reset('user_access');
   $language = $save_language;
   drupal_save_session($save_sessions);
+  _search_by_page_setup_theme();
   ob_end_clean();
 }
 
@@ -1662,8 +1714,8 @@ function _search_by_page_indexing_users() {
       if ($account) {
         db_insert('sbp_index_users')
           ->fields(array(
-              'rid'=> $rid,
-              'uid'=> $account->uid,
+              'rid' => $rid,
+              'uid' => $account->uid,
             ))
           ->execute();
       }

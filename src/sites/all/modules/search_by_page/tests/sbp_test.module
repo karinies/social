@@ -326,7 +326,11 @@ function sbp_test_make_output_page() {
  */
 function sbp_test_make_queried_page() {
 
-  return '<h2>' . t( 'Trees' ) . '</h2>' . '<ul>' .
+  // Print out different text depending on the value of the query arg.
+  $value = $_GET['a'];
+  $text = ($value == 3) ? t('three') : t('four');
+
+  return '<p>' . $text . '</p>' . '<h2>' . t( 'Trees' ) . '</h2>' . '<ul>' .
     '<li>' . t( 'Walnut' ) . '</li>' .
     '<li>' . t( 'Hazelnut' ) . '</li>' .
     '</ul>';
@@ -355,4 +359,33 @@ function sbp_test_preprocess_search_result(&$variables) {
     $variables['info_split']['type'] = check_plain($variables['result']['type']);
     $variables['info'] = implode(' - ', $variables['info_split']);
   }
+}
+
+/**
+ * Implements hook_block_info().
+ *
+ * Sets up two test blocks.
+ */
+function sbp_test_block_info() {
+  return array(
+    'cat' => array(
+      'info' => t('Pet block 1'),
+    ),
+    'dog' => array(
+      'info' => t('Pet block 2'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * @see sbp_test_block_info()
+ */
+function sbp_test_block_view($delta = '') {
+  $text = check_plain($delta);
+  return array(
+    'subject' => ucfirst($text) . ' title',
+    'content' => $text . ' block body',
+  );
 }

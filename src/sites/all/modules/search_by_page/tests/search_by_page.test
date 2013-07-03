@@ -932,6 +932,131 @@ class SearchByPageNodesReindexTest extends SearchByPageTester {
 }
 
 /**
+ * Tests that no extra Search by Page indexing users are created.
+ */
+class SearchByPageExtraUsersTest extends SearchByPageTester {
+
+  public $superuser;
+  public $nodes;
+
+  public static function getInfo() {
+    return array(
+      'name' => t('Search by Page Extra Users'),
+      'description' => t('Test that only the necessary users are created.'),
+      'group' => t('Search by Page'),
+      'dependencies' => array('search', 'sbp_test', 'sbp_nodes', 'dblog', 'search_by_page', 'comment'),
+    );
+  }
+
+  public function setUp() {
+    parent::setUp('search', 'search_by_page', 'sbp_nodes', 'sbp_test', 'dblog', 'comment');
+    $this->setUpEnvironments();
+
+    // Set up super-user.
+
+    $this->superuser = $this->drupalCreateUser(array('administer nodes',
+        'access content', 'administer content types', 'administer blocks',
+        'administer search', 'search content', 'administer search by page',
+        'access administration pages', $this->searchPerm($this->envinfo1),
+        'administer site configuration', 'administer users',
+        'administer permissions', 'view test private content',
+        'access site reports', 'access comments',
+        'skip comment approval', 'administer comments'));
+
+    $this->drupalLogin($this->superuser);
+
+    // Set up so "sbp_indexed" nodes are searchable.
+    // Index them with the super-user.
+
+    $this->drupalPost('admin/config/search/search_by_page/edit/' . $this->envid1,
+      array(
+        'sbp_nodes_types_indexed[sbp_indexed]' => TRUE,
+        'sbp_nodes_display_type' => 'excerpts',
+        'sbp_nodes_role' => $this->getNewRoleID($this->superuser),
+        'button_label' => t('Search pages'),
+      ),
+      'Save configuration');
+    cache_clear_all('variables', 'cache_bootstrap');
+    variable_initialize();
+
+    // Create 5 nodes with the same content.
+    $info = array(
+      'body' => array(LANGUAGE_NONE => array(array('value' => 'blah'))),
+      'type' => 'sbp_indexed',
+      'language' => LANGUAGE_NONE,
+      'title' => 'blah',
+      'test_private' => FALSE,
+    );
+
+    $this->nodes = array();
+    for ($i = 0; $i < 5; $i++) {
+      $this->nodes[] = $this->drupalCreateNode($info);
+    }
+
+    // Run cron to index these nodes.
+    $this->doCronrun();
+    $this->drupalLogin($this->superuser);
+    $this->drupalGet('admin/reports/dblog');
+    $this->assertText(t('Cron run completed'), 'Log shows cron run completed');
+    $this->drupalLogout();
+  }
+
+  /**
+   * Tests that no new users are created when reindexing.
+   */
+  function testReindexingUsers() {
+    $this->drupalLogin($this->superuser);
+    $search_path = $this->envinfo1['page_path'];
+
+    // Count the number of users.
+    $num_before = $this->howManyUsers();
+
+    // Set to reindex automatically on normal cycle.
+    $this->drupalPost('admin/config/search/search_by_page/edit/' . $this->envid1,
+      array(
+        'sbp_nodes_min_time' => 1,
+        'sbp_nodes_max_time' => 0,
+      ),
+      'Save configuration');
+    cache_clear_all('variables', 'cache');
+    variable_initialize();
+
+    // Set search so it only indexes 1 node per cron run.
+    variable_set('sbp_cron_limit', 1);
+
+    // Figure out the current index times of the nodes.
+    $orig = $this->getIndexTimes();
+
+    // In a loop: run cron, and verify each time that something was reindexed.
+    for ($i = 0; $i < 10; $i++) {
+      // Run cron - should reindex just one node.
+      $this->doCronrun();
+      $this->drupalLogin($this->superuser);
+
+      // Figure out the current index times of the nodes.
+      $new = $this->getIndexTimes();
+
+      // Verify that only one was indexed, and it was the oldest one.
+      $this->verifyIndexCycling($orig, $new);
+      $orig = $new;
+    }
+
+    // Now see how many users there are.
+    $num_after = $this->howManyUsers();
+
+    $this->assertEqual($num_before, $num_after, "Number of users before ($num_before) and after ($num_after) is the same");
+  }
+
+  // Counts how many user accounts there are.
+  function howManyUsers() {
+    $query = db_select('users', 'u');
+    $query->addExpression('count(*)');
+    return $query->execute()
+      ->fetchField();
+  }
+}
+
+/**
  * Functionality tests for Search by Page Users.
  */
 class SearchByPageUsersTest extends SearchByPageTester {
@@ -1294,10 +1419,25 @@ class SearchByPagePathsTest extends SearchByPageTester {
       ),
       'Create new indexed page');
 
+    $this->drupalGet('sbp_test_queried_page', array('query' => array('a' => 3)));
+    $this->assertText('three', 'First query page shows query text');
+    $this->drupalGet('sbp_test_queried_page', array('query' => array('a' => 4)));
+    $this->assertText('four', 'Second query page shows query text');
+
     $this->drupalPost($path_add_path,
       array(
         'path' => 'sbp_test_queried_page?a=3',
         'title' => t("Public page with query"),
+        'type' => t('Page'),
+        'snippet' => 'yes',
+        'role' => $this->getNewRoleID($this->noprivuser),
+      ),
+      'Create new indexed page');
+
+    $this->drupalPost($path_add_path,
+      array(
+        'path' => 'sbp_test_queried_page?a=4',
+        'title' => t("Public page with other query"),
         'type' => t('Page'),
         'snippet' => 'yes',
         'role' => $this->getNewRoleID($this->noprivuser),
@@ -1344,6 +1484,8 @@ class SearchByPagePathsTest extends SearchByPageTester {
     $this->assertText('Orange', "Snippet override is shown");
     $this->assertNoText('Apple', "Overridden excerpt is not shown");
     $this->assertText('Walnut', "Page with query is shown");
+    $this->assertText('three', "Page with query shows query text");
+    $this->assertText('four', "Second page with query shows query text");
 
     // Privileged user - should see the public and private pages
 
@@ -1359,8 +1501,9 @@ class SearchByPagePathsTest extends SearchByPageTester {
     $this->assertText('Orange', "Snippet override is shown");
     $this->assertNoText('Apple', "Overridden excerpt is not shown");
     $this->assertText('Walnut', "Page with query is shown");
+    $this->assertText('three', "Page with query shows query text");
+    $this->assertText('four', "Second page with query shows query text");
   }
-
 
   /**
    * Tests that the text in the excluded tag is actually excluded.
@@ -2957,5 +3100,110 @@ class SearchByPageIntlTest extends SearchByPageTester {
       $this->assertRaw($good[$key], "Text for $key in right language is present");
       $this->assertNoRaw($bad[$key], "Text for $key in other language is not present");
     }
+  }
+}
+
+/**
+ * Tests that the right theme is used for indexing.
+ *
+ * This was issue http://drupal.org/node/1598710.
+ */
+class SearchByPageThemeTest extends SearchByPageTester {
+
+  public $superuser;
+
+  public static function getInfo() {
+    return array(
+      'name' => t('Search by Page Theme Test'),
+      'description' => t('Test that the right theme is used for indexing'),
+      'group' => t('Search by Page'),
+      'dependencies' => array('search', 'sbp_test', 'sbp_paths', 'dblog', 'search_by_page'),
+    );
+  }
+
+  public function setUp() {
+    parent::setUp('search', 'search_by_page', 'sbp_paths', 'sbp_test', 'dblog');
+
+    $this->setUpEnvironments();
+
+    $this->superuser = $this->drupalCreateUser(array('administer nodes',
+        'access content', 'administer content types', 'administer blocks',
+        'administer search', 'search content', 'administer search by page',
+        $this->searchPerm($this->envinfo1), 'access administration pages',
+        'administer site configuration', 'administer users',
+        'administer permissions', 'view test private content',
+        'access site reports', 'administer themes',
+        'view the administration theme'));
+    $this->drupalLogin($this->superuser);
+
+    // Set up indexing of pages.
+    $this->drupalPost('admin/config/search/search_by_page/edit/' . $this->envid1,
+      array(
+        'button_label' => t('Search pages'),
+      ),
+      'Save configuration');
+
+    $path_add_path = 'admin/config/search/search_by_page/edit/' . $this->envid1 .
+      '/paths/add';
+
+    $this->drupalPost($path_add_path,
+      array(
+        'path' => 'sbp_test_pub_page',
+        'title' => t("Public page"),
+        'type' => t('Page'),
+        'snippet' => 'yes',
+        'role' => $this->getNewRoleID($this->superuser),
+      ),
+      'Create new indexed page');
+
+    // Turn on the administrative theme.
+    $this->drupalPost('admin/appearance', array(
+        'admin_theme' => 'seven',
+      ), t('Save configuration'));
+
+    // Add different blocks to the Content region in the admin and regular
+    // themes.
+    $this->drupalPost('admin/structure/block', array(
+        'blocks[sbp_test_cat][region]' => 'content',
+      ), t('Save blocks'));
+    $this->drupalPost('admin/structure/block/list/seven', array(
+        'blocks[sbp_test_dog][region]' => 'content',
+      ), t('Save blocks'));
+
+    cache_clear_all('variables', 'cache_bootstrap');
+    variable_initialize();
+
+    // Run cron by clicking on the Status Report link.
+    $this->drupalGet('admin/reports/status');
+    $this->clickLink('run cron manually');
+    $this->drupalGet('admin/reports/dblog');
+    $this->assertText(t('Cron run completed'), 'Log shows cron run completed');
+    $this->assertText('dog', 'Dog block is showing on admin page');
+  }
+
+  /**
+   * Tests that the right theme was used to index the page.
+   */
+  function testTheme() {
+    $search_path = $this->envinfo1['page_path'];
+
+    // Search for Cat (block in the right theme) should be successful.
+    $this->drupalPost($search_path,
+      array('keys' => 'cat'),
+      t('Search pages')
+    );
+
+    $this->assertText('Trees', "Found Trees on the search results page");
+    $this->assertText('cat', "Found cat block on the search results page");
+    $this->assertNoText('dog', "Did not find dog block on the search results page");
+
+    // Search for Dog (block in the wrong theme) should not be successful.
+    $this->drupalPost($search_path,
+      array('keys' => 'dog'),
+      t('Search pages')
+    );
+
+    $this->assertText('Your search yielded no results', 'Search for dog was unsuccessful');
+
   }
 }

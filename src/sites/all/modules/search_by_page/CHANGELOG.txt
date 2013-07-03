@@ -5,6 +5,16 @@ Search by Page x.x-x.x, xxxx-xx-xx
 Search by Page 7.x-1.x, xxxx-xx-xx
 ----------------------------------
 
+Search by Page 7.x-1.3, 2013-01-19
+----------------------------------
+#1386822 by Jaapx, jhodgdon: Ensure only one indexing user is created per role
+
+#1187776, #1558142 by jhodgdon: Only render content-area blocks when finding
+page content in search, and reset some more statics in the menu system.
+
+#1598710 by jhodgdon: Make sure correct theme is used to index pages.
+
+#1617688 by frizi, jhodgdon: Fix bug in dealing with pages with GET arguments.
 
 Search by Page 7.x-1.2, 2011-09-22
 ----------------------------------
