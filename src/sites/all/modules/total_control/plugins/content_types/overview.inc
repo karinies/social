@@ -14,7 +14,7 @@ $plugin = array(
   'defaults' => array('types' => NULL, 'comments' => NULL, 'spam' => 1, 'user' => NULL, 'roles' => NULL),
   'icon' => 'cog.png',
   'description' => t('An overview of both content and users in one pane'),
-  'category' => t('Total control'),
+  'category' => t('Dashboard'),
   'edit text' => t('Configure'),
 );
 
@@ -58,7 +58,7 @@ function total_control_overview_content_type_render($subtype, $conf, $panel_args
 
   $block = new stdClass();
   $block->module = t('total_control');
-  $block->title = total_control_overview_content_type_admin_title();
+  $block->title = t('Content and User overview');
   $block->content = theme('total_control_overview', array('content' => $overview_cnt, 'users' => $overview_usr));
 
   return $block;

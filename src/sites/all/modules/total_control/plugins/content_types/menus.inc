@@ -14,7 +14,7 @@ $plugin = array(
   'defaults' => array('menus' => array()),
   'icon' => 'cog.png',
   'description' => t('Provides links to administer menus.'),
-  'category' => t('Total control'),
+  'category' => t('Dashboard'),
   'edit text' => t('Configure'),
 );
 
@@ -39,6 +39,9 @@ function total_control_menus_content_type_admin_info($subtype = NULL, $conf = NU
  * Run-time rendering of the body of the block.
  */
 function total_control_menus_content_type_render($subtype, $conf, $args, &$context) {
+  if (!module_exists('menu')) {
+    return;
+  }
   $items = array();
 
   $menus = menu_get_menus();
@@ -49,15 +52,17 @@ function total_control_menus_content_type_render($subtype, $conf, $args, &$conte
   $rows = array();
 
   foreach ($menus as $menu_name => $menu) {
-    if ($conf['menus'][$menu_name] === $menu_name) {
-      $rows[] = array(
-        'data' => array(
-          t($menu),
-          l(t('Configure'), 'admin/structure/menu/manage/' . $menu_name . '/edit', $options),
-          l(t('Manage links'), 'admin/structure/menu/manage/' . $menu_name, $options),
-          l(t('Add new link'), 'admin/structure/menu/manage/' . $menu_name . '/add', $options),
-        ),
-      );
+    if (array_key_exists($menu_name, $conf['menus'])) {
+      if ($conf['menus'][$menu_name] === $menu_name) {
+        $rows[] = array(
+          'data' => array(
+            t($menu),
+            l(t('Configure'), 'admin/structure/menu/manage/' . $menu_name . '/edit', $options),
+            l(t('Manage links'), 'admin/structure/menu/manage/' . $menu_name, $options),
+            l(t('Add new link'), 'admin/structure/menu/manage/' . $menu_name . '/add', $options),
+          ),
+        );
+      }
     }
   }
 
@@ -70,7 +75,8 @@ function total_control_menus_content_type_render($subtype, $conf, $args, &$conte
     );
   }
 
-  // Build a link to the menu UI.
+  // Build a link to the menu admin UI.
+  $link = '';
   if (user_access('administer menu')) {
     $link = l(t('Menu administration'), 'admin/structure/menu');
   }
@@ -88,6 +94,9 @@ function total_control_menus_content_type_render($subtype, $conf, $args, &$conte
  * 'Edit form' callback for the content type.
  */
 function total_control_menus_content_type_edit_form($form, &$form_state) {
+  if (!module_exists('menu')) {
+    return $form;
+  }
   $conf = $form_state['conf'];
 
   $menus = menu_get_menus();

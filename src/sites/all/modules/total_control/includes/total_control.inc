@@ -93,7 +93,8 @@ function total_control_views_add_display($content_type = '', $machine_type = '')
   $auto_page_default = variable_get('total_control_auto_pages', array());
   $auto_pane_default = variable_get('total_control_auto_panels', array());
 
-  if (!($auto_page_default['type'] === 0)) {
+  if (!empty($auto_page_default) && (array_key_exists('type', $auto_page_default)) 
+      && !($auto_page_default['type'] === 0)) {
     // Add page display.
     $view = views_get_view('control_content');
     if (!array_key_exists('page_tc_' . $machine_type, $view->display)) { 
@@ -106,12 +107,13 @@ function total_control_views_add_display($content_type = '', $machine_type = '')
     }
     else {
       drupal_set_message(t('Total Control was unable to create your 
-        administrative view because a view already exists with the name: 
+        administrative page view because a view already exists with the name: 
         !name', array('!name' => 'page_tc_' . $machine_type)));
     }
   }
   
-  if (!($auto_pane_default['type'] === 0)) {
+  if (!empty($auto_pane_default) && (array_key_exists('type', $auto_pane_default)) 
+      && !($auto_pane_default['type'] === 0)) {
     // Add pane display.
     $paneview = views_get_view('control_content_panes');
     if (!array_key_exists('pane_tc_' . $machine_type, $paneview->display)) {
@@ -122,7 +124,7 @@ function total_control_views_add_display($content_type = '', $machine_type = '')
     }
     else {
       drupal_set_message(t('Total Control was unable to create your 
-        administrative view because a view already exists with the name: 
+        administrative pane view because a view already exists with the name: 
         !name', array('!name' => 'pane_tc_' . $machine_type)));
     }
   }

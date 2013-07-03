@@ -14,7 +14,7 @@ $plugin = array(
   'defaults' => array('vids' => NULL),
   'icon' => 'cog.png',
   'description' => t('Provides links to administer taxonomy.'),
-  'category' => t('Total control'),
+  'category' => t('Dashboard'),
   'edit text' => t('Configure'),
 );
 
@@ -64,7 +64,7 @@ function total_control_taxonomy_content_type_render($subtype, $conf, $panel_args
           $rows[] = array(
             'data' => array(
               t($vocab->name . ': ' . $terms),
-              l(t('Configure'), 'http://control7.dev/admin/structure/taxonomy/' . $vocab->machine_name . '/edit', $options),
+              l(t('Configure'), 'admin/structure/taxonomy/' . $vocab->machine_name . '/edit', $options),
               l(t('Manage categories'), 'admin/structure/taxonomy/' . $vocab->machine_name, $options),
               l(t('Add new category'), 'admin/structure/taxonomy/' . $vocab->machine_name . '/add', $options),
             ),
@@ -83,6 +83,7 @@ function total_control_taxonomy_content_type_render($subtype, $conf, $panel_args
     );
   }
 
+  $link = '';
   if (user_access('administer taxonomy')) {
     $link = l(t('Taxonomy administration'), 'admin/structure/taxonomy');
   }
@@ -97,6 +98,10 @@ function total_control_taxonomy_content_type_render($subtype, $conf, $panel_args
  */
 function total_control_taxonomy_content_type_edit_form($form, &$form_state) {
   $conf = $form_state['conf'];
+
+  if (!module_exists('taxonomy')) {
+    return $form;
+  }
 
   $vocabs = taxonomy_get_vocabularies();
   if (!empty($vocabs)) {

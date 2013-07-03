@@ -16,7 +16,7 @@ $plugin = array(
   'defaults' => array('types' => NULL),
   'icon' => 'cog.png',
   'description' => t('Provides links to administer content types.'),
-  'category' => t('Total control'),
+  'category' => t('Dashboard'),
   'edit text' => t('Configure'),
 );
 
@@ -77,6 +77,7 @@ function total_control_node_types_content_type_render($subtype, $conf, $panel_ar
     );
   }
 
+  $link = '';
   if (user_access('administer content types')) {
     $link = l(t('Content type administration'), 'admin/structure/types');
   }
