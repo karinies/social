@@ -1,7 +1,0 @@
-This patch fixes two problems.  It fixes a problem where ical exports were not exporting in UTC. 
-The view was generating the time according to the site's timezone setting, but the ical feed
-was labeling it as UTC.  This patch fixes the problem by converting the date to UTC.
-
-Also, all day event were not getting generated correctly.
-
-Please see: http://drupal.org/node/1460058
