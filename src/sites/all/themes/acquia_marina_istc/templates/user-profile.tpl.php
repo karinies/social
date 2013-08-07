@@ -71,6 +71,14 @@
   </div> 
   <?php } ?>
   <?php 
+  if ($profile->field_job_title) { 
+    $jobtitle =  $profile->field_job_title['und'][0]['value'];
+  ?>
+  <div class="profile-jobtitle"><h2>
+  <h3> <?php print($jobtitle);?> </h3>
+  </div>
+  <?php } ?>
+  <?php 
     if ($profile->field_bio) { 
       $bio =  $profile->field_bio['und'][0]['value'];
   ?>   

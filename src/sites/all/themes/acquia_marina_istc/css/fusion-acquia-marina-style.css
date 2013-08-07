@@ -1790,7 +1790,8 @@ div.panel-pane div.node,
 }
 
 /* people page */
-.view-people.view-display-id-people_page .view-content table {
+.view-people.view-display-id-people_page .view-content table,
+.view-people.view-display-id-people_page2 .view-content table {
     border-collapse: collapse;
     text-align:center;
 }
@@ -1802,14 +1803,17 @@ div.panel-pane div.node,
     padding: 20px;
     vertical-align: top;
 }
-.view-people.view-display-id-people_page .views-field-name {
+.view-people .views-field-name {
     font-weight: bold;
     font-size: 1.15em;
 }
-.view-people.view-display-id-people_page .views-field-field-affiliation {
+.view-people .views-field-field-job-title {
+    font-style: italic;
+}
+.view-people .views-field-field-affiliation {
     font-weight: bold;
 }
-.view-people.view-display-id-people_page .views-field-picture img {
+.view-people .views-field-picture img {
     -moz-box-shadow: 2px 2px 5px #CCC;
     -webkit-box-shadow: 2px 2px 5px #CCC;
     box-shadow: 2px 2px 5px #CCC;
@@ -1985,4 +1989,8 @@ ul.inline li.blog_usernames_blog {
 
 .side-menu { 
   padding-top: 75px;
+}
+
+.filedepottoolbar {
+    background-color: #144A6E;
 }
