@@ -181,9 +181,7 @@ function istc_form_alter(&$form, &$form_state, $form_id) {
 
 /* Edit Filedepot New Folder form so that the "Inherit Parent Permission" checkbox is selected by default */
 function istc_form_alter(&$form, &$form_state, $form_id) {
-  dpm($form_id);
   if ($form_id == 'filedepot_newfolder_form') {
-    dpm($form);
     $form['filedepot_inherit_permissions']['#default_value'] = array('yes');
     $form['filedepot_inherit_permissions']['#access'] = user_access('administer users');
   }
