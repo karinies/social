@@ -35,6 +35,16 @@ function istc_menu() {
     'type' => MENU_LOCAL_TASK,
     'weight' => -8,
   );
+  
+  $items['node/%node/filedepot'] = array(
+    'title' => 'Files Beta',
+    'page callback' => '_istc_groupfilesbeta',
+    'page arguments' => array(1),
+    'access callback' => '_istc_check_group_tab_permission',
+    'access arguments' => array(1),
+    'weight' => -7,
+    'type' => MENU_LOCAL_TASK,
+  );
 
   $items['node/%node/pages'] = array(
     'title' => 'Pages',
@@ -43,7 +53,7 @@ function istc_menu() {
     'access callback' => '_istc_check_group_tab_permission',
     'access arguments' => array(1),
     'type' => MENU_LOCAL_TASK,
-    'weight' => -7,
+    'weight' => -6,
   );
   /*
   $items['node/%node/events'] = array(
@@ -63,7 +73,7 @@ function istc_menu() {
     'access callback' => '_istc_check_group_tab_permission',
     'access arguments' => array(1),
     'type' => MENU_LOCAL_TASK,
-    'weight' => -6,
+    'weight' => -5,
   ); 
   
   $items['node/%node/edit'] = array(
@@ -102,6 +112,10 @@ function _istc_groupblog($node) {
 
 function _istc_groupfiles($node) {
   return views_embed_view("group_content","group_files_block", $node->nid);
+}
+
+function _istc_groupfilesbeta($node) {
+  return filedepot_main();
 }
 
 function _istc_grouppages($node) {
@@ -165,6 +179,17 @@ function istc_form_alter(&$form, &$form_state, $form_id) {
 }
  */
 
+/* Edit Filedepot New Folder form so that the "Inherit Parent Permission" checkbox is selected by default */
+function istc_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'filedepot_newfolder_form') {
+    $form['filedepot_inherit_permissions']['#default_value'] = array('yes');
+    $form['filedepot_inherit_permissions']['#access'] = user_access('administer users');
+  }
+    if ($form_id == 'filedepot_newfile_form') {
+    $form['filedepot_email_notification']['#default_value'] = array('no');
+    $form['filedepot_email_notification']['#access'] = user_access('administer users');
+  }
+}
 
 /* hook form_profile2_form_alter */
 /* istc role field should only be accessible to admins */
@@ -260,6 +285,9 @@ function send_digest_to_users () {
 }
 
 function test_digest_to_users () {
+       $week = 604800; // in seconds
+       $day = 86400;
+       
        $uid = 94; // Kari Nies
        $usr = user_load($uid);
        $profile = profile2_load_by_user($uid, 'profile_info');
@@ -267,11 +295,14 @@ function test_digest_to_users () {
        $name = $usr->name;
        $email = $usr->mail;
        
+
+               /*
                $original_user = $usr;
                $old_state = drupal_save_session(FALSE);
                $user = user_load($uid);
 
                $output = views_embed_view("group_notifications","group_activity_digest_daily");
+               $output = $output.get_filedepot_updates($day);
                print $output;
                if (_something_to_report($output)) {
                    watchdog('ISTC Digest', "Sending Daily Digest to ".$email);
@@ -279,9 +310,9 @@ function test_digest_to_users () {
                    $params['freq'] = "Daily";
                    drupal_mail('istc', 'digest', $email, user_preferred_language($user), $params);
                }
-
                $user = $original_user;
                drupal_save_session($old_state);
+              */
                
                $original_user = $usr;
                $old_state = drupal_save_session(FALSE);
@@ -289,6 +320,7 @@ function test_digest_to_users () {
                $user = user_load($uid);
 
                $output = views_embed_view("group_notifications","group_activity_digest_weekly");
+               $output = $output.get_filedepot_updates($week*7);
                print $output;
                if (_something_to_report($output)) {
                    $params['body'] = $output;
@@ -303,4 +335,58 @@ function test_digest_to_users () {
 
 function istc_cron() {
     send_digest_to_users();
+}
+
+function get_filedepot_updates($timerange) {
+    $output = "";
+    global $user;
+    $now = time();
+    $threshold = $now-$timerange;
+    // get all new files within timerange
+    $result = db_query("
+                        SELECT  file.fid AS fid, file.cid AS cid, file.title AS title, file.description AS descr, file.submitter AS uid, file.date AS date 
+                        FROM {filedepot_files} file 
+                        WHERE (date>=$threshold)
+                        ORDER BY date DESC
+                       ");
+    foreach($result as $file) {
+        //dpm($file);
+        $owner = user_load($file->uid); 
+        $ownername = $owner->realname;
+        $filename = $file->title;
+        $date = date("l, F j, Y, g:i a", $file->date);
+        // get groups from directory permissions
+
+        $result = db_query("
+                            SELECT  access.permid AS gid, access.catid AS catid, access.permtype AS permtype 
+                            FROM {filedepot_access} access 
+                            WHERE (permtype='group') AND (catid=$file->cid)
+                          ");
+
+          foreach ($result as $access) {
+              if (og_is_member('node',$access->gid)) {
+                // get group title without loading entire node
+                $titleresult = db_query("SELECT node.title as title FROM node WHERE nid = $access->gid");
+                foreach ($titleresult as $titlenode) {
+                    $grouptitle = $titlenode->title;
+                }
+                $filelink = l($filename, "node/".$access->gid."/filedepot/", array("query"=>(array('fid'=>$file->fid))));
+                $fileoutput = "File upload: ".$filelink." uploaded by ".l($ownername,"user/".$user->uid)." on ".$date." to ".l($grouptitle,"node/".$access->gid."/filedepot");
+                if ($file->descr) {
+                    $fileoutput = $fileoutput."<small><em><p>".$file->descr."</p></em></small>";
+                }
+                $output = $output.$fileoutput."<hr>";
+              }
+        }
+    }
+    if (!$output=="") {// add heading only if there is content
+        $output = "<h3>New File Uploads</h3>".$output;
+    }
+    return $output;
+}
+
+function test_filedepot_updates() {
+    $week = 604800; // in seconds
+    $day = 86400;
+    get_filedepot_updates($week*7);
 }
