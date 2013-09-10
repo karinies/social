@@ -216,13 +216,15 @@ function _something_to_report ($report) {
            (strpos($report,'There is no new content.') == FALSE) ||
            (strpos($report,'New Group Comments') == TRUE)  ||
            (strpos($report,'New Calendar Events') == TRUE) ||
-           (strpos($report,'New Groups') == TRUE));
-;
+           (strpos($report,'New Groups') == TRUE) ||
+           (strpos($report,'New File Uploads') == TRUE));
 }
 
 function send_digest_to_users () {
    watchdog('ISTC Digest', "executing send_digest_to_users...");
    global $user;
+   $week = 604800; // in seconds
+   $day = 86400;
    $ismonday = (date('w') == 1);
    /*$query =  "select uid, name from users where uid  and uid !=1> 0 ";*/
    $query =  "select uid, name from users where uid  and uid > 0 ";
@@ -247,6 +249,7 @@ function send_digest_to_users () {
 
                /* $output = views_embed_view("group_content","groups_activity_digest"); /* old notifications */
                $output = views_embed_view("group_notifications","group_activity_digest_daily");
+               $output = $output.get_filedepot_updates($day);
                if (_something_to_report($output)) {
                    /*_send_digest($email, $key, $output, "Daily");*/
                    $params['body'] = $output;
@@ -267,6 +270,7 @@ function send_digest_to_users () {
 
                   /* $output = views_embed_view("group_content","groups_activity_digest_weekly"); /* old notifications */
                   $output = views_embed_view("group_notifications","group_activity_digest_weekly");
+                  $output = $output.get_filedepot_updates($week);
                   if (_something_to_report($output)) {
                       /*_send_digest($email, $key, $output, "Weekly");*/
                       $params['body'] = $output;
