@@ -1,0 +1,12 @@
+--- bulk_media_upload.upload-orig.inc	2013-09-19 15:47:18.000000000 -0700
++++ bulk_media_upload.upload.inc	2013-09-19 15:48:13.000000000 -0700
+@@ -251,7 +251,9 @@
+   drupal_set_message(t('@entity_type generation completed.', array('@entity_type' => $entity_info['label'])));
+   $_SESSION['bulk_media_upload_batch_result'] = $results;
+   // TODO: do landing pages for other entity types?
++  /*  Do not go to summary page when upload is part of node menu
+   if ($entity_type == 'node') {
+     drupal_goto('admin/content/media/bulk_upload/summary');
+   }
++   */
+ }

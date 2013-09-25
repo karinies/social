@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Photo Albums feature.
+ */
+
+include_once 'photo_albums.features.inc';

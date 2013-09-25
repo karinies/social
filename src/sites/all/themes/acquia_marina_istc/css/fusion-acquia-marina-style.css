@@ -1990,7 +1990,74 @@ ul.inline li.blog_usernames_blog {
 .side-menu { 
   padding-top: 75px;
 }
-
+/* file depot */
 .filedepottoolbar {
     background-color: #144A6E;
+}
+/* photo albums */
+#galleriffic .image-desc {
+    padding-top: 0px;
+}
+#views-form-photo-albums-captions-pane .form-actions {
+    display: none;
+}
+.view-album-views .view-content table {
+    /*border-collapse: collapse;*/
+    text-align:center;
+    background-color: #f8feff;
+}
+.view-album-views table {
+    width: 100%;
+}
+.view-display-id-albums_block td {
+    width: 100%;
+}
+.view-display-id-albums_page td {
+    width: 25%;
+}
+.view-display-id-albums_page .album-info {
+      height: 175px;
+}
+.view-album-views td .album-info
+{
+  padding: 20px;
+  vertical-align: top;
+  text-align: center;
+  line-height:100%;
+  font-size: 1em;
+}
+.view-album-views td .album-info,
+#galleriffic span.image-caption
+{
+  background-color: white; /* #efefef;*/
+  border : solid 1px #ccc;
+  border-radius: 8px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+}
+.view-album-views .views-field-title {
+    font-weight: bold;
+    font-size: 1.15em;
+    padding-bottom: 1em;
+}
+.view-album-views td.empty {
+    border: 0;
+    background-color: #f8feff;
+}
+ul.draggableviews-grid-photo_albums-reorder_pane .views-row .views-field {
+    text-align:center; 
+    margin: px;
+}
+#galleriffic .pagination span.current {
+  background-color: #2F76A5;;
+  border-color: #2F76A5;
+}
+#galleriffic ul.thumbs li.selected a.thumb {
+    background: #27638C;
+}
+#galleriffic #gallery .caption .image-title {
+    color: #2F76A5;
+}
+div.panel-pane .node.node-album {
+    margin-bottom: 1em;
 }
