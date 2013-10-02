@@ -1791,7 +1791,8 @@ div.panel-pane div.node,
 
 /* people page */
 .view-people.view-display-id-people_page .view-content table,
-.view-people.view-display-id-people_page2 .view-content table {
+.view-people.view-display-id-people_page2 .view-content table,
+.view-people.view-display-id-block_1 .view-content table {
     border-collapse: collapse;
     text-align:center;
 }
@@ -1800,8 +1801,10 @@ div.panel-pane div.node,
 }
 .view-people td {
     width: 25%;
-    padding: 20px;
-    vertical-align: top;
+    padding: 20px
+}
+.view-people.view-display-id-block_1 td {
+    width: 100%;
 }
 .view-people .views-field-name {
     font-weight: bold;
