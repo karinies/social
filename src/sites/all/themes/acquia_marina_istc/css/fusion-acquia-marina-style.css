@@ -2061,3 +2061,41 @@ ul.draggableviews-grid-photo_albums-reorder_pane .views-row .views-field {
 div.panel-pane .node.node-album {
     margin-bottom: 1em;
 }
+
+/* collab mini panel */
+#mini-panel-_create_links_and_members .pane-node-group-group .field-name-group-group .field-item a{
+    /* subscribe button */
+    background-color: #048DB7; /* old browsers */
+    background-image: linear-gradient(
+	top, 
+	#048DB7 0%, 
+	#144A6E 100%
+    ); /* w3c */ 
+    background-image: -o-linear-gradient(
+	top, 
+	#048DB7 0%, 
+	#144A6E 100%
+    ); /* opera */
+    background-image: -webkit-gradient(
+	linear, left top, left bottom, 
+	from(#048DB7),
+	to(#144A6E)
+    );  /* webkit */
+    background-image: -moz-linear-gradient(
+  	top, 
+	#048DB7 0%, 
+	#144A6E 100%
+    ); /* firefox */
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    color: #FFFFFF;
+    padding: 10px;
+}
+.page-node.node-type-group #mini-panel-_create_links_and_members h2{
+    margin-top: 0px;
+}
+#mini-panel-_create_links_and_members {
+    padding-top: 20px;
+}
+
