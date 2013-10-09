@@ -1917,9 +1917,13 @@ ul.inline li.blog_usernames_blog {
     display:inline;
 }
 
-.view-group-content .add-content-link {
+.view-group-content .add-content-link{
     float: right;
     margin-top: -20px;
+}
+.view-album-views .add-content-link {
+    float: right;
+    margin-top: -30px;
 }
 
 .view-group-content .node-biblio .content {
