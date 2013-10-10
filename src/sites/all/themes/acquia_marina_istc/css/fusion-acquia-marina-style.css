@@ -1666,7 +1666,7 @@ div.poll div.bar div.foreground {
 
 .user-picture {
   float: left;  
-  padding : 0 15px 15px 0;
+  padding : 0 15px 10px 0;
   position: relative;
   z-index: 10;
 }
