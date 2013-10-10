@@ -223,6 +223,7 @@ function istc_form_alter(&$form, &$form_state, $form_id) {
 function istc_form_profile2_form_alter(&$form, &$form_state) {
     //dpm($form);
     $form['profile_profile_info']['field_istc_role']['#access'] = user_access('administer users');
+    $form['profile_profile_info']['field_alt_sort']['#access'] = user_access('administer users');
 }
 
 /* hook mail */
@@ -236,7 +237,7 @@ function istc_mail ($key, &$message, $params) {
         break;
     }
 }
-  
+ 
 function _something_to_report ($report) {
    return (/*(strpos($report,'There is no recent activity.') == FALSE) || /* old notifications */
            /*(strpos($report,'New calendar events') == TRUE) || /* old notifications */
