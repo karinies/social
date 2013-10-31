@@ -40,6 +40,7 @@
     $profile = profile2_load_by_user($uid, $myprofile);
   ?>
   <?php 
+  if ($user) { /* fix error in search results */
   if ($user->picture) { 
   ?>
   <div class="profile-picture">
@@ -98,7 +99,7 @@
         <?php {print render($user_profile['og_group_ref']);} ?>
       </div>
     </div>
-  <?php } ?>
+  <?php } }?>
       
 
 
