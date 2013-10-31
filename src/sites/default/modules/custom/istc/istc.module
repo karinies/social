@@ -194,28 +194,30 @@ function istc_form_alter(&$form, &$form_state, $form_id) {
  */
 
 function istc_form_alter(&$form, &$form_state, $form_id) {
-  /* Edit Filedepot New Folder form so that the "Inherit Parent Permission" checkbox is selected by default */
-  if ($form_id == 'filedepot_newfolder_form') {
-    $form['filedepot_inherit_permissions']['#default_value'] = array('yes');
-    $form['filedepot_inherit_permissions']['#access'] = user_access('administer users');
-  }
-  if ($form_id == 'filedepot_newfile_form') {
-    $form['filedepot_email_notification']['#default_value'] = array('no');
-    $form['filedepot_email_notification']['#access'] = user_access('administer users');
-  }
-  /* edit bulk media upload form to set the album default value */
-  if ($form_id == 'bulk_media_upload_upload_form') {
-     $menu_item = menu_get_item();
-     //dpm($form);
-     if ($menu_item['path'] == 'node/%/uploads') {
-         $nid = arg(1);
-         $node = node_load($nid);
-         $album_val = $node->title." (".$nid.")";
-         $form['default_values']['field_photo_album']['und']['0']['target_id']['#default_value']=$album_val;
-     }
-     // Add documentation to the form
-     $form['import_information']['#markup'] = "<p>Upload multiple images into this photo album in three steps:</p><ol><li>click \"Add files\" to select images from your disk. &nbsp;Files must end in&nbsp;png, gif, jpg, or jpeg.</li><li>once you have finished adding files, click \"Start upload\" to upload all of the new image files to the server.</li><li>after all the files have uploaded click the \"Generate Node Entities\" button at the bottom to build individual photo nodes for each image uploaded.</li></ol><p><strong>Note:  Do not change the Title or Default Album fields.</strong></p><p>You are done! &nbsp;Go back to the \"View\" tab to see the new photos in your album. &nbsp;Select the \"Captions\" tab to add titles and captions to your new images.</p>";
-  }
+   switch($form_id)
+   {         
+      /* Edit Filedepot New Folder form so that the "Inherit Parent Permission" checkbox is selected by default */
+      case 'filedepot_newfolder_form':
+         $form['filedepot_inherit_permissions']['#default_value'] = array('yes');
+         $form['filedepot_inherit_permissions']['#access'] = user_access('administer users');
+         break;
+      case 'filedepot_newfile_form':
+         $form['filedepot_email_notification']['#default_value'] = array('no');
+         $form['filedepot_email_notification']['#access'] = user_access('administer users');
+         break;
+      /* edit bulk media upload form to set the album default value */
+      case 'bulk_media_upload_upload_form':
+         $menu_item = menu_get_item();
+         if ($menu_item['path'] == 'node/%/uploads') {
+            $nid = arg(1);
+            $node = node_load($nid);
+            $album_val = $node->title." (".$nid.")";
+            $form['default_values']['field_photo_album']['und']['0']['target_id']['#default_value']=$album_val;
+         }
+         // Add documentation to the form
+         $form['import_information']['#markup'] = "<p>Upload multiple images into this photo album in three steps:</p><ol><li>click \"Add files\" to select images from your disk. &nbsp;Files must end in&nbsp;png, gif, jpg, or jpeg.</li><li>once you have finished adding files, click \"Start upload\" to upload all of the new image files to the server.</li><li>after all the files have uploaded click the \"Generate Node Entities\" button at the bottom to build individual photo nodes for each image uploaded.</li></ol><p><strong>Note:  Do not change the Title or Default Album fields.</strong></p><p>You are done! &nbsp;Go back to the \"View\" tab to see the new photos in your album. &nbsp;Select the \"Captions\" tab to add titles and captions to your new images.</p>";
+         break;
+   }
 }
 
 /* hook form_profile2_form_alter */
