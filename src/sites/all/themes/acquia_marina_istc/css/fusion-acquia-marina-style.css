@@ -700,7 +700,7 @@ form input.form-submit:focus {
 
 /* Typography, background, borders, padding for form fields */
 
-.form-item input,
+/*.form-item input,*/
 .form-item select,
 .form-item textarea {
   background-color: #f4f8fb; /* old browsers */
@@ -2106,3 +2106,15 @@ div.panel-pane .node.node-album {
     padding-top: 20px;
 }
 
+/* fix formatting problem with file upload */
+input.form-file {
+    padding: 3px;
+    border: 1px solid #ccc;
+    border-top-color: #999;
+}
+div.description {
+    margin: 5px 0;
+    line-height: 1.231em;
+    font-size: 0.923em;
+    color: #666;
+}
