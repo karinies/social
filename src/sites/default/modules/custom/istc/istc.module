@@ -25,7 +25,7 @@ function istc_menu() {
     'type' => MENU_LOCAL_TASK,
     'weight' => -9,
   );
-  
+  /*
   $items['node/%node/files'] = array(
     'title' => 'File Repository',
     'page callback' => '_istc_groupfiles',
@@ -35,10 +35,10 @@ function istc_menu() {
     'type' => MENU_LOCAL_TASK,
     'weight' => -8,
   );
-  
+  */
   $items['node/%node/filedepot'] = array(
-    'title' => 'Files Beta',
-    'page callback' => '_istc_groupfilesbeta',
+    'title' => 'File Repository',
+    'page callback' => '_istc_groupfiledepot',
     'page arguments' => array(1),
     'access callback' => '_istc_check_group_tab_permission',
     'access arguments' => array(1),
@@ -128,7 +128,7 @@ function _istc_groupfiles($node) {
   return views_embed_view("group_content","group_files_block", $node->nid);
 }
 
-function _istc_groupfilesbeta($node) {
+function _istc_groupfiledepot($node) {
   return filedepot_main();
 }
 
