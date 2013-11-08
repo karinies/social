@@ -81,6 +81,7 @@ function bulk_media_upload_upload_form($form, &$form_state) {
       '#tree' => TRUE,
     ) + $additions;
   }
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Generate @entity_type entities', array('@entity_type' => $entity_info['label'])),
