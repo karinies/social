@@ -1092,6 +1092,10 @@ class filedepot
         while ($A     = $query->fetchAssoc()) {
           $file = file_load($A['drupal_fid']);
           file_usage_delete($file, 'filedepot');
+          
+          if (file_exists($file->uri)) {
+            file_delete($file);
+          }
         }
 
         $subfolder_nid = db_query("SELECT nid FROM {filedepot_categories} WHERE cid=:cid", array(':cid' => $cid))->fetchField();
@@ -1272,7 +1276,7 @@ class filedepot
             file_prepare_directory($private_destination, FILE_CREATE_DIRECTORY);
 
             $file           = file_load($dfid);
-            $private_uri    = $private_destination . $file->filename;
+            $private_uri    = $private_destination . $fname;
             $file           = file_move($file, $private_uri, FILE_EXISTS_RENAME);
             $file->display  = 1;
             list($scheme, $target) = explode('://', $file->uri, 2);
