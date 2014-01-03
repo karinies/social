@@ -1179,10 +1179,8 @@ function node_save($node) {
     module_invoke_all('node_' . $op, $node);
     module_invoke_all('entity_' . $op, $node, 'node');
 
-    // Update the node access table for this node. There's no need to delete
-    // existing records if the node is new.
-    $delete = $op == 'update';
-    node_access_acquire_grants($node, $delete);
+    // Update the node access table for this node.
+    node_access_acquire_grants($node);
 
     // Clear internal properties.
     unset($node->is_new);
@@ -2224,8 +2222,8 @@ function node_last_changed($nid) {
 /**
  * Returns a list of all the existing revision numbers.
  *
- * @param Drupal\node\Node $node
- *   The node entity.
+ * @param $node
+ *   The node object.
  *
  * @return
  *   An associative array keyed by node revision number.
@@ -3323,7 +3321,7 @@ function _node_query_node_access_alter($query, $type) {
     return;
   }
 
-  $tables = &$query->getTables();
+  $tables = $query->getTables();
   $base_table = $query->getMetaData('base_table');
   // If no base table is specified explicitly, search for one.
   if (!$base_table) {
@@ -3438,21 +3436,13 @@ function _node_query_node_access_alter($query, $type) {
       else {
         //$query->exists($subquery);
         if (empty($tableinfo['join type'])) {
-          // If we are looking at the main table of the query, apply the
+          // If we are looking at the main table of the query, apply the 
           // subquery directly.
           $query->exists($subquery);
-        }
-        else {
+        } else {
           // If we are looking at a joined table, add the node access check
           // to the join condition.
-          $tables[$nalias]['condition'] .= ' AND EXISTS(' . (string)$subquery . ')';
-          $tables[$nalias]['arguments'] += $subquery->arguments();
-          // Increment the placeholder count on the main query until it matches the placeholders
-          // used by the subquery.
-          $cond_count = $subquery->nextPlaceholder();
-          while ($cond_count--) {
-            $query->nextPlaceholder();
-          }
+          $tables[$nalias]['condition'] .= ' AND ' . (string)$subquery;
         }
       }
     }
