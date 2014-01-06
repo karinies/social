@@ -7,9 +7,9 @@ dependencies[] = entity
 dependencies[] = plupload
 dependencies[] = token
 
-; Information added by drupal.org packaging script on 2013-09-30
+; Information added by  packaging script on 2013-11-19
 version = "7.x-1.x-dev"
 core = "7.x"
 project = "bulk_media_upload"
-datestamp = "1380557149"
+datestamp = "1384864116"
 

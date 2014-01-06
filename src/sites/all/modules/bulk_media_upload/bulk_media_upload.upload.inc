@@ -252,9 +252,9 @@ function _bulk_media_upload_batch_finished($success, $results, $operations) {
   drupal_set_message(t('@entity_type generation completed.', array('@entity_type' => $entity_info['label'])));
   $_SESSION['bulk_media_upload_batch_result'] = $results;
   // TODO: do landing pages for other entity types?
-  /* Do not go to summary page when upload is part of node menu
+  /*
   if ($entity_type == 'node') {
     drupal_goto('admin/content/media/bulk_upload/summary');
   }
-   */
+  */
 }

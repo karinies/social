@@ -8,21 +8,21 @@
  * Implements hook_menu().
  */
 function bulk_media_upload_menu() {
-  $items['admin/content/media/bulk_upload'] = array(
-    'title' => 'Bulk Media Upload',
+  $items['admin/content/file/bulk_upload'] = array(
+    'title' => 'Bulk Upload',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('bulk_media_upload_upload_form'),
     'access arguments' => array('bulk upload media'),
     'file' => 'bulk_media_upload.upload.inc',
-    'type' => MENU_NORMAL_ITEM,
+    'type' => MENU_LOCAL_TASK,
   );
 
-  $items['admin/content/media/bulk_upload/summary'] = array(
-    'title' => 'Bulk Media Upload Summary',
+  $items['admin/content/file/bulk_upload/summary'] = array(
+    'title' => 'Bulk Upload Summary',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('bulk_media_upload_summary'),
     'access arguments' => array('bulk upload media'),
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_LOCAL_ACTION,
     'file' => 'bulk_media_upload.summary.inc',
   );
 
