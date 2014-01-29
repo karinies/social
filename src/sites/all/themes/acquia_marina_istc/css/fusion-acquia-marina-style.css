@@ -2118,3 +2118,8 @@ div.description {
     font-size: 0.923em;
     color: #666;
 }
+
+/* all hands reg form */
+.node-webform .webform-component span.form-required {
+    display:none; /*hide red star*/
+}
