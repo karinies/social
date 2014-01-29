@@ -304,7 +304,7 @@ function send_digest_to_users () {
                   if (_something_to_report($output)) {
                       /*_send_digest($email, $key, $output, "Weekly");*/
                       $params['body'] = $output;
-                      $params['freq'] = "Weely";
+                      $params['freq'] = "Weekly";
                       watchdog('ISTC Digest', "Sending Weekly Digest to ".$email);
                       drupal_mail('istc', 'digest', $email, user_preferred_language($user), $params);
                   }
@@ -358,7 +358,7 @@ function test_digest_to_users () {
                print $output;
                if (_something_to_report($output)) {
                    $params['body'] = $output;
-                   $params['freq'] = "Weely";
+                   $params['freq'] = "Weekly";
                    watchdog('ISTC Digest', "Sending Weekly Digest to ".$email);
                    drupal_mail('istc', 'digest', $email, user_preferred_language($user), $params);
                }
